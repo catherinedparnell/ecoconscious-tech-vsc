@@ -1,0 +1,141 @@
+{
+    "name": "vsc-duke",
+    "displayName": "vsc-duke",
+    "description": "Displays current CPU stats, memory/disk consumption, and battery percentage remaining.",
+    "version": "1.0.7",
+    "engines": {
+        "vscode": "^1.25.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "icon": "images/icon.png",
+    "galleryBanner": {
+        "color": "#008080",
+        "theme": "dark"
+    },
+    "activationEvents": [
+        "*"
+    ],
+    "main": "./out/extension",
+    "contributes": {
+        "configuration": {
+            "type": "object",
+            "title": "Resource Monitor",
+            "properties": {
+                "resmon.show.cpuusage": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Toggles the display of CPU Usage."
+                },
+                "resmon.show.cpufreq": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Toggles the display of CPU frequency. For Windows, this displays the maximum clock speed."
+                },
+                "resmon.show.mem": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Toggles the display of memory consumption."
+                },
+                "resmon.show.battery": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Toggles the display of battery percentage remaining if a device with a battery. If the device reports not having a battery, this setting will always be treated as false."
+                },
+                "resmon.show.disk": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Toggles the display of disk space information."
+                },
+                "resmon.show.cputemp": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Toggles the display of CPU temperature. May not work without the lm-sensors module on Linux. May require running VS Code as admin on Windows"
+                },
+                "resmon.disk.format": {
+                    "type": "string",
+                    "enum": [
+                        "PercentRemaining",
+                        "PercentUsed",
+                        "Remaining",
+                        "UsedOutOfTotal"
+                    ],
+                    "description": "Configures how the disk space is displayed (percentage remaining/used, absolute remaining, used out of totel)."
+                },
+                "resmon.disk.drives": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true,
+                    "default": [],
+                    "description": "Drives to show. For example, 'C:' on Windows, and '/dev/sda1' on Linux."
+                },
+                "resmon.updatefrequencyms": {
+                    "type": "number",
+                    "default": 2000,
+                    "minimum": 200,
+                    "description": "How long in ms between updates to resources."
+                },
+                "resmon.freq.unit": {
+                    "type": "string",
+                    "enum": [
+                        "GHz",
+                        "MHz",
+                        "KHz",
+                        "Hz"
+                    ],
+                    "default": "GHz"
+                },
+                "resmon.mem.unit": {
+                    "type": "string",
+                    "enum": [
+                        "GB",
+                        "MB",
+                        "KB",
+                        "B"
+                    ],
+                    "default": "GB"
+                },
+                "resmon.show.precision": {
+                    "type": "number",
+                    "default": 2,
+                    "minimum": 0,
+                    "maximum": 2,
+                    "description": "How long in ms between updates to resources."
+                },
+                "resmon.alignLeft": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Toggles the alignment of the status bar."
+                },
+                "resmon.color": {
+                    "type": "string",
+                    "default": "#FFFFFF",
+                    "description": "Color of the status bar text in hex code (for example, #FFFFFF is white). The color must be in the format #RRGGBB, using hex digits."
+                }
+            }
+        }
+    },
+    "repository": {
+        "url": "https://github.com/Njanderson/resmon.git"
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "watch": "tsc -watch -p ./"
+    },
+    "dependencies": {
+        "systeminformation": "^4.27.11"
+    },
+    "devDependencies": {
+        "systeminformation": "^4.27.11",
+        "@types/mocha": "^2.2.42",
+        "@types/node": "^7.0.43",
+        "tslint": "^5.8.0",
+        "typescript": "^2.6.1",
+        "vscode": "^1.1.6"
+    }
+}
