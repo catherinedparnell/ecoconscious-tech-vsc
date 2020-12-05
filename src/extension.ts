@@ -1,11 +1,10 @@
 'use strict';
 import { window, ExtensionContext, StatusBarAlignment, StatusBarItem, workspace, WorkspaceConfiguration } from 'vscode';
 
-let i = -1;
-let lastCap = 0;
-let totWattage = 0;
-
 var si = require('systeminformation');
+const publicIp = require('public-ip');
+const fetch = require('node-fetch');
+const data = require('./us-emissions.json');
 
 export function activate(context: ExtensionContext) {
 	var toolBar: Toolbar = new Toolbar();
@@ -50,70 +49,89 @@ abstract class Resource {
     }
 }
 
-class CpuUsage extends Resource {
-
+class Location extends Resource {
     constructor(config: WorkspaceConfiguration) {
-        super(config, true, "cpuusage");
-    }
+        super(config, false, "location");
+	}
+	
+	// gets location from IP
+	async getLocation(ip: string): Promise<string> {
+        return fetch(`https://get.geojs.io/v1/ip/geo/${ip}.json`)
+                .then(res => res.json())
+                .then(res => {
+                        return res.country as string
+                })
+	}
 
+	// returns display
     async getDisplay(): Promise<string> {
-        let currentLoad = await si.currentLoad();
-        return `$(pulse) ${(100 - currentLoad.currentload_idle).toFixed(this.getPrecision())}%`;
+		const ip = await publicIp.v4();
+		let location = await this.getLocation(ip);
+		return `Location: ${location}`
     }
-
 }
-
-// class Voltage extends Resource {
-//     constructor(config: WorkspaceConfiguration) {
-//         super(config, true, "voltage");
-//     }
-
-//     async getDisplay(): Promise<string> {
-//         let battery = await si.battery();
-//         return `Voltage: ${battery.voltage.toFixed(this.getPrecision())}`;
-//     }
-// }
-
-// class CurCap extends Resource {
-
-//     constructor(config: WorkspaceConfiguration) {
-// 		super(config, true, "curcap");
-//     }
-
-//     async getDisplay(): Promise<string> {
-//         let battery = await si.battery();
-//         return `Current Capacity: ${battery.currentcapacity.toFixed(this.getPrecision())}`;
-//     }
-// }
 
 class Emissions extends Resource {
 
     constructor(config: WorkspaceConfiguration) {
 		super(config, true, "emissions");
-    }
+	}
+	
+	// gets location from IP
+	async getLocation(ip: string): Promise<Array<string>> {
+        return fetch(`https://get.geojs.io/v1/ip/geo/${ip}.json`)
+                .then(res => res.json())
+                .then(res => {
+						let country = res.country;
+						let region = res.region;
+                        return [country, region]
+                })
+	}
 
+	// returns display
     async getDisplay(): Promise<string> {
 		i += 1;
+		const ip = await publicIp.v4();
+		let location = await this.getLocation(ip);
 		let battery = await si.battery();
 		let currentCapacity = battery.currentcapacity;
+		
+		// initial case
 		if (i === 0) {
 			i += 1;
 			lastCap = currentCapacity;
-			return `0 emissions`;
+			return `Carbon Emitted: 0.00000 grams`;
 		}
+		
+		// if battery is at full charge
+		if (battery.percent === 100) {
+			return `Unplug to Calculate`;
+		}
+		
+		// calculations
 		let voltage = battery.voltage;
-
 		let deltaCapacity = Math.abs(currentCapacity - lastCap)
 		lastCap = currentCapacity;
-		let wH = (deltaCapacity + voltage) / 1000;
-		let wattage = wH * (1/60);
+		let kwh = (deltaCapacity * voltage) / 1000 / 1000;
+		let wattage = kwh * (1/60/60);
 		totWattage += wattage; 
+
+		let emissions;
+        
+		if (location[0] === "United States") {
+			let region = location[1];
+			// divide by 1000 to convert lbs/Mwh to lbs/kwh
+			let lbs = data[region] / 1000 * totWattage;
+			emissions = lbs * 453.592;
+		} else {
+			// does not have data for international carbon emissions
+			return `International Data Not Found`;
+		}
 		
-		return `Total Wattage: ${totWattage}`
+		return `Carbon Emitted: ${emissions.toFixed(5)} grams`
 	}
 
 }
-
 
 class Toolbar {
     private _statusBarItem: StatusBarItem;
@@ -132,10 +150,8 @@ class Toolbar {
 
         // Add all resources to monitor
         this._resources = [];
-        this._resources.push(new CpuUsage(this._config));
-		this._resources.push(new Emissions(this._config));
-		
-		
+		this._resources.push(new Location(this._config));
+		this._resources.push(new Emissions(this._config));		
     }
 
     public startUpdating() {
@@ -148,7 +164,7 @@ class Toolbar {
     }
     
     private _getColor() : string {
-        const defaultColor = "#FFFFFF";
+        const defaultColor = "#00ff19";
 
         // Enforce #RRGGBB format
         let hexColorCodeRegex = /^#[0-9A-F]{6}$/i;
@@ -186,7 +202,7 @@ class Toolbar {
                 return finishedUpdates.filter(update => update !== null).join(this._delimiter);
             });
 
-            setTimeout(() => this.update(), this._config.get('updatefrequencyms', 60000));
+            setTimeout(() => this.update(), 1000);
         }
     }
 
@@ -198,3 +214,8 @@ class Toolbar {
 
 export function deactivate() {
 }
+
+// globals
+let i = -1;
+let lastCap = 0;
+let totWattage = 0;

@@ -9,7 +9,6 @@
     "categories": [
         "Other"
     ],
-    "icon": "images/icon.png",
     "galleryBanner": {
         "color": "#008080",
         "theme": "dark"
@@ -27,13 +26,9 @@
                     "type": "boolean",
                     "default": true
                 },
-                "vsc-duke.show.voltage": {
+                "vsc-duke.show.location": {
                     "type": "boolean",
-                    "default": true
-                },
-                "vsc-duke.show.curcap": {
-                    "type": "boolean",
-                    "default": true
+                    "default": false
                 },
                 "vsc-duke.show.emissions": {
                     "type": "boolean",
@@ -53,14 +48,10 @@
                 },
                 "vsc-duke.color": {
                     "type": "string",
-                    "default": "#FFFFFF",
-                    "description": "Color of the status bar text in hex code (for example, #FFFFFF is white). The color must be in the format #RRGGBB, using hex digits."
+                    "default": "#00ff19"
                 }
             }
         }
-    },
-    "repository": {
-        "url": "https://github.com/Njanderson/resmon.git"
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
@@ -69,12 +60,17 @@
         "watch": "tsc -watch -p ./"
     },
     "dependencies": {
+        "@types/node-fetch": "^2.5.7",
+        "fetch": "^1.1.0",
+        "http": "0.0.1-security",
+        "node-fetch": "^2.6.1",
+        "public-ip": "^4.0.2",
         "systeminformation": "^4.27.11"
     },
     "devDependencies": {
-        "systeminformation": "^4.27.11",
         "@types/mocha": "^2.2.42",
         "@types/node": "^7.0.43",
+        "systeminformation": "^4.27.11",
         "tslint": "^5.8.0",
         "typescript": "^2.6.1",
         "vscode": "^1.1.6"
