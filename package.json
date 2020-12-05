@@ -21,61 +21,37 @@
     "contributes": {
         "configuration": {
             "type": "object",
-            "title": "Resource Monitor",
+            "title": "vsc-duke",
             "properties": {
-                "resmon.show.cpuusage": {
+                "vsc-duke.show.cpuusage": {
                     "type": "boolean",
                     "default": true
                 },
-                "resmon.show.voltage": {
+                "vsc-duke.show.voltage": {
                     "type": "boolean",
                     "default": true
                 },
-                "resmon.show.mem": {
+                "vsc-duke.show.curcap": {
                     "type": "boolean",
                     "default": true
                 },
-                "resmon.show.curcap": {
+                "vsc-duke.show.emissions": {
                     "type": "boolean",
                     "default": true
                 },
-                "resmon.show.cputemp": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "resmon.freq.unit": {
-                    "type": "string",
-                    "enum": [
-                        "GHz",
-                        "MHz",
-                        "KHz",
-                        "Hz"
-                    ],
-                    "default": "GHz"
-                },
-                "resmon.mem.unit": {
-                    "type": "string",
-                    "enum": [
-                        "GB",
-                        "MB",
-                        "KB",
-                        "B"
-                    ],
-                    "default": "GB"
-                },
-                "resmon.show.precision": {
+                "vsc-duke.show.precision": {
                     "type": "number",
                     "default": 2,
                     "minimum": 0,
                     "maximum": 2,
                     "description": "How long in ms between updates to resources."
                 },
-                "resmon.alignLeft": {
+                "vsc-duke.alignLeft": {
                     "type": "boolean",
                     "default": true,
                     "description": "Toggles the alignment of the status bar."
                 },
-                "resmon.color": {
+                "vsc-duke.color": {
                     "type": "string",
                     "default": "#FFFFFF",
                     "description": "Color of the status bar text in hex code (for example, #FFFFFF is white). The color must be in the format #RRGGBB, using hex digits."
