@@ -30,4 +30,4 @@ Initial release
 
 Our Experience at HackDuke
 -------------------------------------------------
-We built this extension as a part of the HackDuke Code for Good Hackathon in the Energy & Environment track. It is part of a broader project, focused to informing and educating developers on the environmental impact of their technological pursuits. Stay tuned for our website and partnering Chrome Extension.
+We built this extension as a part of the HackDuke Code for Good Hackathon in the Energy & Environment track. It is part of a broader project, focused on informing and educating developers and internet users alike on the environmental impact of their technological pursuits. Stay tuned for our website and partnering Chrome Extension.
