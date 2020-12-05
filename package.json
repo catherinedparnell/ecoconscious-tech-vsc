@@ -25,58 +25,23 @@
             "properties": {
                 "resmon.show.cpuusage": {
                     "type": "boolean",
-                    "default": true,
-                    "description": "Toggles the display of CPU Usage."
+                    "default": true
                 },
-                "resmon.show.cpufreq": {
+                "resmon.show.voltage": {
                     "type": "boolean",
-                    "default": true,
-                    "description": "Toggles the display of CPU frequency. For Windows, this displays the maximum clock speed."
+                    "default": true
                 },
                 "resmon.show.mem": {
                     "type": "boolean",
-                    "default": true,
-                    "description": "Toggles the display of memory consumption."
+                    "default": true
                 },
-                "resmon.show.battery": {
+                "resmon.show.curcap": {
                     "type": "boolean",
-                    "default": true,
-                    "description": "Toggles the display of battery percentage remaining if a device with a battery. If the device reports not having a battery, this setting will always be treated as false."
-                },
-                "resmon.show.disk": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Toggles the display of disk space information."
+                    "default": true
                 },
                 "resmon.show.cputemp": {
                     "type": "boolean",
-                    "default": false,
-                    "description": "Toggles the display of CPU temperature. May not work without the lm-sensors module on Linux. May require running VS Code as admin on Windows"
-                },
-                "resmon.disk.format": {
-                    "type": "string",
-                    "enum": [
-                        "PercentRemaining",
-                        "PercentUsed",
-                        "Remaining",
-                        "UsedOutOfTotal"
-                    ],
-                    "description": "Configures how the disk space is displayed (percentage remaining/used, absolute remaining, used out of totel)."
-                },
-                "resmon.disk.drives": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    },
-                    "uniqueItems": true,
-                    "default": [],
-                    "description": "Drives to show. For example, 'C:' on Windows, and '/dev/sda1' on Linux."
-                },
-                "resmon.updatefrequencyms": {
-                    "type": "number",
-                    "default": 2000,
-                    "minimum": 200,
-                    "description": "How long in ms between updates to resources."
+                    "default": false
                 },
                 "resmon.freq.unit": {
                     "type": "string",

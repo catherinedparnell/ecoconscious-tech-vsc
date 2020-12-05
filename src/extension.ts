@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 'use strict';
 import { window, ExtensionContext, StatusBarAlignment, StatusBarItem, workspace, WorkspaceConfiguration } from 'vscode';
-import { Units, DiskSpaceFormat, DiskSpaceFormatMappings, FreqMappings, MemMappings } from './constants';
+import { Units } from './constants';
 
 var si = require('systeminformation');
 
 export function activate(context: ExtensionContext) {
-    var resourceMonitor: ResMon = new ResMon();
-    resourceMonitor.StartUpdating();
-    context.subscriptions.push(resourceMonitor);
+    var toolBar: Toolbar = new Toolbar();
+    toolBar.StartUpdating();
+    context.subscriptions.push(toolBar);
 }
 
 abstract class Resource {
@@ -69,158 +69,31 @@ class CpuUsage extends Resource {
 
 }
 
-class CpuTemp extends Resource {
-
+class Voltage extends Resource {
     constructor(config: WorkspaceConfiguration) {
-        super(config, true, "cputemp");
-    }
-
-    protected async isShown(): Promise<boolean> {
-        // If the CPU temp sensor cannot retrieve a valid temperature, disallow its reporting.
-        var cpuTemp = (await si.cpuTemperature()).main;
-        let hasCpuTemp = cpuTemp !== -1;
-        return Promise.resolve(hasCpuTemp && this._config.get("show.cputemp", true));
+        super(config, true, "voltage");
     }
 
     async getDisplay(): Promise<string> {
-        let currentTemps = await si.cpuTemperature();
-        return `$(flame) ${(currentTemps.main).toFixed(this.getPrecision())} C`;
+        let battery = await si.battery();
+        return `Voltage: ${battery.voltage.toFixed(this.getPrecision())}`;
     }
 }
 
-class CpuFreq extends Resource {
+class CurCap extends Resource {
+
     constructor(config: WorkspaceConfiguration) {
-        super(config, true, "cpufreq");
+        super(config, true, "curcap");
     }
 
     async getDisplay(): Promise<string> {
-        let cpuCurrentSpeed = await si.cpuCurrentspeed();
-        // systeminformation returns frequency in terms of GHz by default
-        let speedHz = parseFloat(cpuCurrentSpeed.avg) * Units.G;
-        let formattedWithUnits = this.getFormattedWithUnits(speedHz);
-        return `$(dashboard) ${(formattedWithUnits)}`;
-    }
-
-    getFormattedWithUnits(speedHz: number): string {
-        var unit = this._config.get('freq.unit', "GHz");
-        var freqDivisor: number = FreqMappings[unit];
-        return `${(speedHz / freqDivisor).toFixed(this.getPrecision())} ${unit}`;
-    }
-}
-
-class Battery extends Resource {
-
-    constructor(config: WorkspaceConfiguration) {
-        super(config, false, "battery");
-    }
-
-    protected async isShown(): Promise<boolean> {
-        let hasBattery = (await si.battery()).hasbattery;
-        return Promise.resolve(hasBattery && this._config.get("show.battery", false));
-    }
-
-    async getDisplay(): Promise<string> {
-        let rawBattery = await si.battery();
-        var percentRemaining = Math.min(Math.max(rawBattery.percent, 0), 100);
-        return `$(plug) ${percentRemaining}%`;
-    }
-}
-
-class Memory extends Resource {
-
-    constructor(config: WorkspaceConfiguration) {
-        super(config, true, "mem");
-    }
-    
-    async getDisplay() : Promise<string> {
-        let unit = this._config.get('memunit', "GB");
-        var memDivisor = MemMappings[unit];
-        let memoryData = await si.mem();
-        let memoryUsedWithUnits = memoryData.active / memDivisor;
-        let memoryTotalWithUnits = memoryData.total / memDivisor;
-        return `$(ellipsis) ${(memoryUsedWithUnits).toFixed(this.getPrecision())}/${(memoryTotalWithUnits).toFixed(this.getPrecision())} ${unit}`;
-    }
-}
-
-class Network extends Resource {
-
-    constructor(config: WorkspaceConfiguration) {
-        super(config, true, "net");
-    
-        // Network stats are requested through returning the delta between
-        // multiple invocations
-        this.getInterfaceStats();
-    }
-
-    async getInterfaceStats() : Promise<any> {
-        let networkInterfaces = await si.networkInterfaces();
-        for (let networkInterface in networkInterfaces) {
-            console.log(networkInterface);
-            let networkStats = await si.networkStats(networkInterface);
-            console.log(networkStats);
-        }
-    }
-
-    async getDisplay(): Promise<string> {
-        // Not implemented
-        return ""; 
-    }
-}
-
-class DiskSpace extends Resource {
-
-    constructor(config: WorkspaceConfiguration) {
-        super(config, false, "disk");
-    }
-
-    getFormat(): DiskSpaceFormat {
-        let format: string | undefined = this._config.get<string>("disk.format");
-        if (format) {
-            return DiskSpaceFormatMappings[format];
-        } else {
-            return DiskSpaceFormat.PercentRemaining;
-        }
-    }
-
-    getDrives(): string[] {
-        let drives: string[] | undefined = this._config.get<string[]>("disk.drives");
-        if (drives) {
-            return drives;
-        } else {
-            return [];
-        }
-    }
-
-    getFormattedDiskSpace(fsSize: any) {
-        switch (this.getFormat()) {
-            case DiskSpaceFormat.PercentRemaining:
-                return `${fsSize.fs} ${(100 - fsSize.use).toFixed(this.getPrecision())}% remaining`;
-            case DiskSpaceFormat.PercentUsed:
-                return `${fsSize.fs} ${fsSize.use.toFixed(this.getPrecision())}% used`;
-            case DiskSpaceFormat.Remaining:
-                return `${fsSize.fs} ${this.convertBytesToLargestUnit(fsSize.size - fsSize.used)} remaining`;
-            case DiskSpaceFormat.UsedOutOfTotal:
-                return `${fsSize.fs} ${this.convertBytesToLargestUnit(fsSize.used)}/${this.convertBytesToLargestUnit(fsSize.size)} used`;
-        }
-    }
-
-    async getDisplay(): Promise<string> {
-        let fsSizes = await si.fsSize();
-        let drives = this.getDrives();
-        var formatted = "$(database) ";
-        let formattedDrives: string[] = [];
-        for (let fsSize of fsSizes) {
-            // Drives were specified, check if this is an included drive
-            if (drives.length === 0 || drives.indexOf(fsSize.fs) !== -1) {
-                formattedDrives.push(this.getFormattedDiskSpace(fsSize));
-            }
-        }
-        return formatted + formattedDrives.join(", ");
+        let battery = await si.battery();
+        return `Current Capacity: ${battery.currentcapacity.toFixed(this.getPrecision())}`;
     }
 }
 
 
-class ResMon {
+class Toolbar {
     private _statusBarItem: StatusBarItem;
     private _config: WorkspaceConfiguration;
     private _delimiter: string;
@@ -238,12 +111,8 @@ class ResMon {
         // Add all resources to monitor
         this._resources = [];
         this._resources.push(new CpuUsage(this._config));
-        this._resources.push(new CpuFreq(this._config));
-        this._resources.push(new Battery(this._config));
-        this._resources.push(new Memory(this._config));
-        this._resources.push(new DiskSpace(this._config));
-        this._resources.push(new CpuTemp(this._config));
-        this._resources.push(new Network(this._config));
+        this._resources.push(new CurCap(this._config));
+        this._resources.push(new Voltage(this._config));
     }
 
     public StartUpdating() {
