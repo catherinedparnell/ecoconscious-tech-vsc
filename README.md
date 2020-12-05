@@ -15,8 +15,8 @@ grams.
 This extension contributes the following settings:
 
 * `vsc-duke.emissions`: Show your cumulative grams of carbon emissions
-* `vsc-duke.location`: Shows your current location
-* `vsc-duke.alignLeft`: Toggles alignment of toolbar
+* `vsc-duke.location`: Show your current location
+* `vsc-duke.alignLeft`: Toggle alignment of toolbar
 
 ## Known Issues
 
