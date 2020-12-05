@@ -4,7 +4,7 @@ A VSCode extension built to keep us developers mindful of our environmental impa
 
 ## Features
 
-Calculates and displays estimated cumulative carbon emissions in grams based off of computer use since launching the extension in your project.
+Calculates and displays estimated cumulative carbon emissions in the toolbar since the launch of the extension in your project.
 
 ## Calculations
 We used location-based energy mix data to obtain the lbs of carbon dioxide produced per kilowatt hour in each US state (region). We used the change in capacity and voltage per second of the laptop of battery in order to calculate an estimated expenditure of power. Using the two values, we calculated the estimated carbon emissions and converted to
