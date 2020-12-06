@@ -1,4 +1,4 @@
-# Welcome to Ecoconsious Tech's Vscode Extension
+# Welcome to Ecoconscious Tech's Vscode Extension
 
 A VSCode extension built to keep us developers mindful of our environmental impact.
 
