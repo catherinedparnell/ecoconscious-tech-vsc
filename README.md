@@ -7,7 +7,10 @@ A VSCode extension built to keep us developers mindful of our environmental impa
 Calculates and displays estimated cumulative carbon emissions in the toolbar since the launch of the extension in your project.
 
 ## Calculations
-Using the [GeoJS API](https://www.geojs.io/), we fetched the users' location using their IP address. Then, we found location-based energy mix data to obtain the lbs of carbon dioxide produced per kilowatt hour in each US state (region) from the [U.S. Environmental Protection Agency eGRID](https://www.epa.gov/egrid) data for the year 2016. We then used the change in capacity and voltage per second of the laptop of battery in order to calculate an estimated expenditure of power. Using the two values, we calculated the estimated carbon emissions and converted to grams.
+
+We considered two main components when calculating emissions. First, power consumed, and second, the coefficient of how much carbon is produced for power consumed. Due to limitations in garnering wattage from power producing entities like CPU, GPU, and DRAM, we chose to estimate expenditure of power based on a formula using the change in capacity and voltage per second of the laptop battery. Then, we found location-based energy mix data from the [U.S. Environmental Protection Agency eGRID](https://www.epa.gov/egrid) to obtain the lbs of carbon dioxide produced per kilowatt hour in each US state for the year 2016, and were able to fetch users locations with their IP address using the [GeoJS API](https://www.geojs.io/).
+
+Using the two values, we calculated the estimated carbon emissions per second and converted it to cumulated grams, and it is displayed in the toolbar. Now you can code and see an estimation of your real-time environmental impact.
 
 ## Extension Settings
 
@@ -27,6 +30,10 @@ This extension contributes the following settings:
 ### 1.0.0
 
 Initial release
+
+## Acknowledgements
+
+Special thanks to inspiration from the [Green Web Foundation](https://www.thegreenwebfoundation.org/green-web-datasets/) and their many green web conservation efforts. Inspiration also came from this academic work: [Energy and Policy Considerations for Deep Learning in NLP](https://arxiv.org/pdf/1906.02243.pdf).
 
 Our Experience at HackDuke
 -------------------------------------------------
