@@ -1,0 +1,22 @@
+{
+    "fonts": [
+      {
+        "id": "icomoon",
+        "src": [
+          {
+            "path": "./vscloud.woff",
+            "format": "woff"
+          }
+        ],
+        "weight": "normal",
+        "style": "normal"
+      }
+    ],
+    "iconDefinitions": {
+      "dialog-close": {
+        "fontCharacter": "\\e900",
+        "fontId": "icomoon"
+      }
+    }
+  }
+  

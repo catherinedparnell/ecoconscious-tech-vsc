@@ -100,12 +100,12 @@ class Emissions extends Resource {
 		if (i === 0) {
 			i += 1;
 			lastCap = currentCapacity;
-			return `Carbon Emitted: 0.00000 grams`;
+			return `0.00000 grams of CO₂ emitted`;
 		}
 		
 		// if battery is at full charge
 		if (battery.percent === 100) {
-			return `Unplug to Calculate`;
+			return `Unplug to calculate grams of CO₂ emitted`;
 		}
 		
 		// calculations
@@ -128,7 +128,7 @@ class Emissions extends Resource {
 			return `International Data Not Found`;
 		}
 		
-		return `Carbon Emitted: ${emissions.toFixed(5)} grams`
+		return `${emissions.toFixed(5)} grams of CO₂ emitted`
 	}
 
 }

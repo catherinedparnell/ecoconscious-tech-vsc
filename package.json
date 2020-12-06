@@ -16,16 +16,20 @@
     "activationEvents": [
         "*"
     ],
-    "main": "./out/extension",
+	"main": "./out/extension",
+	"enableProposedApi": true,
     "contributes": {
+		"productIconTheme": [
+			{
+			  "id": "carbon",
+			  "label": "carbon",
+			  "path": ".producticons/carbon-product-icon-theme.json"
+			}
+		  ],
         "configuration": {
             "type": "object",
             "title": "vsc-duke",
             "properties": {
-                "vsc-duke.show.cpuusage": {
-                    "type": "boolean",
-                    "default": true
-                },
                 "vsc-duke.show.location": {
                     "type": "boolean",
                     "default": false
